@@ -12,7 +12,7 @@ class CallsView extends Component {
         let items = [
             {
                 id: 1,
-                time: '12/11/2201',
+                time: new Date(2201, 11, 12),
                 duration: 51,
                 person: 'Joca',
                 type: 'Potrebna pomoc',
@@ -21,7 +21,7 @@ class CallsView extends Component {
             },
             {
                 id: 2,
-                time: '12/11/2051',
+                time: new Date(2051, 11, 12),
                 duration: 33,
                 person: 'Ceca',
                 type: 'Potrebna pomoc',
@@ -30,7 +30,7 @@ class CallsView extends Component {
             },
             {
                 id: 3,
-                time: '12/11/2011',
+                time: new Date(2011, 10, 12),
                 duration: 35,
                 person: 'Naca',
                 type: 'Hitan slucaj',
@@ -39,7 +39,7 @@ class CallsView extends Component {
             },
             {
                 id: 4,
-                time: '12/11/2031',
+                time: new Date(2019, 11, 1),
                 duration: 35,
                 person: 'Zaca',
                 type: 'Hitan slucaj',
@@ -48,7 +48,7 @@ class CallsView extends Component {
             },
             {
                 id: 5,
-                time: '24/11/2019',
+                time: new Date(2019, 10, 24),
                 duration: 35,
                 person: 'Kaca',
                 type: 'Hitan slucaj',
@@ -62,7 +62,21 @@ class CallsView extends Component {
     handleChangeTableData = date => {
         let items = this.state.initialItems;
         let itemsByDate = items.filter(p => {
-            return p.time === format(date, 'dd/MM/yyyy').toString();
+            return (
+                p.time.getDate() === date.getDate() &&
+                p.time.getMonth() === date.getMonth() &&
+                p.time.getFullYear() === date.getFullYear()
+            );
+        });
+        this.setState({
+            items: [...itemsByDate]
+        });
+    };
+
+    handleChangeTableDataWithRange = (firstDate, secondDate) => {
+        let items = this.state.initialItems;
+        let itemsByDate = items.filter(p => {
+            return p.time >= firstDate && p.time <= secondDate;
         });
         this.setState({
             items: [...itemsByDate]
@@ -74,7 +88,7 @@ class CallsView extends Component {
             return (
                 <tr key={id}>
                     <td>{id}</td>
-                    <td>{time}</td>
+                    <td>{format(time, 'dd/MM/yyyy')}</td>
                     <td>{duration}</td>
                     <td>{person}</td>
                     <td>{type}</td>
@@ -113,6 +127,12 @@ class CallsView extends Component {
                     <span>Kalendar</span>
                     <Calendar
                         onDateSelect={date => this.handleChangeTableData(date)}
+                        onDateRangeSelect={(firstDate, secondDate) =>
+                            this.handleChangeTableDataWithRange(
+                                firstDate,
+                                secondDate
+                            )
+                        }
                     />
                 </div>
                 <div className="col-lg-12 placeHold tableFixHead">

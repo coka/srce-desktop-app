@@ -31,21 +31,32 @@ const months = [
     'Nov',
     'Dec'
 ];
+let clicks = 0;
 
 class Calendar extends Component {
     state = {
-        selectedDate: new Date()
+        selectedDate: new Date(),
+        firstDateSelected: undefined,
+        secondDateSelected: undefined
     };
 
     componentDidMount() {
         this.props.onDateSelect(this.state.selectedDate);
     }
 
+    resetDateRangeState = () => {
+        this.state.firstDateSelected = undefined;
+        this.state.secondDateSelected = undefined;
+    };
+
     handleOnDateClick = event => {
         const clickedDay = event.target.textContent;
 
         const type = event.target.getAttribute('type');
         const { selectedDate } = this.state;
+
+        // Because of using event in the callback function
+        event.persist();
 
         if (type === 'prev') {
             this.setState(
@@ -55,7 +66,43 @@ class Calendar extends Component {
                         clickedDay
                     )
                 },
-                () => this.props.onDateSelect(this.state.selectedDate)
+                () => {
+                    // Selection of date range or single date
+                    if (event.ctrlKey) {
+                        if (clicks === 0) {
+                            this.state.firstDateSelected = this.state.selectedDate;
+                            console.log(this.state.firstDateSelected);
+                            clicks++;
+                        } else {
+                            this.setState(
+                                { secondDateSelected: this.state.selectedDate },
+                                () => {
+                                    this.props.onDateRangeSelect(
+                                        this.state.firstDateSelected,
+                                        this.state.secondDateSelected
+                                    );
+                                    clicks = 0;
+                                    console.log(
+                                        'sc: ' + this.state.secondDateSelected
+                                    );
+                                }
+                            );
+                        }
+                    } else {
+                        this.resetDateRangeState();
+
+                        this.setState(
+                            {
+                                selectedDate: setDate(
+                                    subMonths(selectedDate, 1),
+                                    clickedDay
+                                )
+                            },
+                            () =>
+                                this.props.onDateSelect(this.state.selectedDate)
+                        );
+                    }
+                }
             );
         } else if (type === 'next') {
             this.setState(
@@ -65,7 +112,43 @@ class Calendar extends Component {
                         clickedDay
                     )
                 },
-                () => this.props.onDateSelect(this.state.selectedDate)
+                () => {
+                    // Selection of date range or single date
+                    if (event.ctrlKey) {
+                        if (clicks === 0) {
+                            this.state.firstDateSelected = this.state.selectedDate;
+                            console.log(this.state.firstDateSelected);
+                            clicks++;
+                        } else {
+                            this.setState(
+                                { secondDateSelected: this.state.selectedDate },
+                                () => {
+                                    this.props.onDateRangeSelect(
+                                        this.state.firstDateSelected,
+                                        this.state.secondDateSelected
+                                    );
+                                    clicks = 0;
+                                    console.log(
+                                        'sc: ' + this.state.secondDateSelected
+                                    );
+                                }
+                            );
+                        }
+                    } else {
+                        this.resetDateRangeState();
+
+                        this.setState(
+                            {
+                                selectedDate: setDate(
+                                    addMonths(selectedDate, 1),
+                                    clickedDay
+                                )
+                            },
+                            () =>
+                                this.props.onDateSelect(this.state.selectedDate)
+                        );
+                    }
+                }
             );
         } else {
             this.setState(
@@ -75,12 +158,39 @@ class Calendar extends Component {
                         clickedDay - selectedDate.getDate()
                     )
                 },
-                () => this.props.onDateSelect(this.state.selectedDate)
+                () => {
+                    // Selection of date range or single date
+                    if (event.ctrlKey) {
+                        if (clicks === 0) {
+                            this.state.firstDateSelected = this.state.selectedDate;
+                            console.log(this.state.firstDateSelected);
+                            clicks++;
+                        } else {
+                            this.setState(
+                                { secondDateSelected: this.state.selectedDate },
+                                () => {
+                                    this.props.onDateRangeSelect(
+                                        this.state.firstDateSelected,
+                                        this.state.secondDateSelected
+                                    );
+                                    clicks = 0;
+                                    console.log(this.state.secondDateSelected);
+                                }
+                            );
+                        }
+                    } else {
+                        this.resetDateRangeState();
+
+                        this.props.onDateSelect(this.state.selectedDate);
+                    }
+                }
             );
         }
     };
 
     handleMonthForward = event => {
+        this.resetDateRangeState();
+
         const { selectedDate } = this.state;
         this.setState({ selectedDate: addMonths(selectedDate, 1) }, () =>
             this.props.onDateSelect(this.state.selectedDate)
@@ -88,6 +198,8 @@ class Calendar extends Component {
     };
 
     handleMonthBackward = event => {
+        this.resetDateRangeState();
+
         const { selectedDate } = this.state;
         this.setState({ selectedDate: subMonths(selectedDate, 1) }, () =>
             this.props.onDateSelect(this.state.selectedDate)
@@ -95,6 +207,8 @@ class Calendar extends Component {
     };
 
     handleChangeDate = event => {
+        this.resetDateRangeState();
+
         const option = event.target.textContent;
         const { selectedDate } = this.state;
 
@@ -159,13 +273,31 @@ class Calendar extends Component {
         }
         // Actual
         const selectedDay = this.state.selectedDate.getDate();
+        const { firstDateSelected } = this.state;
+        const { secondDateSelected } = this.state;
+
         for (let i = 1; i <= numOfDays; i++) {
-            if (i === selectedDay) {
+            if (i === selectedDay && secondDateSelected === undefined) {
                 days.push(
                     <td
                         key={i + 'd'}
                         onClick={this.handleOnDateClick}
                         className="text-center btn-success"
+                    >
+                        {i}
+                    </td>
+                );
+            } else if (
+                firstDateSelected !== undefined &&
+                secondDateSelected !== undefined &&
+                i >= firstDateSelected.getDate() &&
+                i <= secondDateSelected.getDate()
+            ) {
+                days.push(
+                    <td
+                        key={i + 'd'}
+                        onClick={this.handleOnDateClick}
+                        className="text-center btn-primary"
                     >
                         {i}
                     </td>

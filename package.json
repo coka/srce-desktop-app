@@ -38,6 +38,7 @@
     "bcryptjs": "^2.4.3",
     "cli.js": "^1.0.2",
     "concurrently": "^5.0.0",
+    "date-fns": "^2.8.1",
     "react-bootstrap": "1.0.0-beta.16",
     "react-router-dom": "^5.0.1",
     "rebuild": "^0.1.2",

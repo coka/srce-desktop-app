@@ -1,78 +1,62 @@
-/* eslint-disable no-console */
-/**
- * Database helper
- * ATM everything will be here
- */
-// IMPORTS
 const fs = require('fs');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
-const typeorm = require('typeorm');
-
 const dbName = '/srce.db';
 const pathToDatabase = path.join(__dirname, dbName);
+const DBHelper = require('./dbHelper');
+const Sequelize = require('sequelize');
 
-// Entitys
-const Person = require('./entity/Person').Person;
+const VolunteerModel = require('./models/volunteer');
 
-function checkIfDatabaseExists() {
-    fs.access(pathToDatabase, fs.F_OK, e => {
-        if (e) {
-            module.exports.CreateDatabase();
-        } else {
-            console.log('Already created');
-        }
-    });
-}
+const sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: pathToDatabase
+  });
 
-exports.databaseAutomation = () => {
-    checkIfDatabaseExists();
-    this.ConnectToDb();
-};
-
-exports.CreateDatabase = () => {
-    // eslint-disable-next-line no-unused-vars
-    const db = new sqlite3.Database(pathToDatabase, e => {
-        if (e) {
-            console.error(e.message);
-        } else {
-            console.log('Created new db!');
-        }
-    });
-};
-
-exports.DeleteDatabae = () => {
-    fs.unlink(pathToDatabase, e => {
-        if (e) {
-            console.log(e.message);
-            return;
-        }
-        console.log(`Database removed: ${pathToDatabase}`);
-    });
-};
-
-exports.ConnectToDb = () => {
-    typeorm
-        .createConnection()
-        .then(() => {
-            console.log('connected');
-        })
-        .catch(e => {
-            console.log(e);
-        });
-};
-
-async function saveToDb(entity, data) {
-    const repo = typeorm.getRepository(entity);
-
-    try {
-        await repo.save(data);
-    } catch (error) {
-        console.log(error);
+function testConnection(){
+  sequelize.authenticate().then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    if (!fs.existsSync(pathToDatabase)){
+      console.log('Connection will be created.');
+      DBHelper.checkIfDatabaseExists();
+    } else {
+      console.error('Unable to connect to the database:', err);
     }
+  });
 }
 
-exports.addPersonToDb = () => {
-    const person = new Person(0, 'djordje', 'Ljubicic');
-    saveToDb('Person', person);
+exports.checkIfDatabaseExists = () => {
+  fs.access(pathToDatabase, fs.F_OK, e => {
+      if (e) {
+          createDatabase();
+      } else {
+          console.log('Already created db srce.')
+          testConnection();
+      }
+  });
+}
+
+function createDatabase () {
+  // eslint-disable-next-line no-unused-vars
+      const db = new sqlite3.Database(pathToDatabase, e => {
+      if (e) {
+          console.error(e.message);
+      } else {
+          console.log('Created new db!');
+      }
+  });
 };
+
+const volunteer = VolunteerModel(sequelize, Sequelize);
+
+volunteer.findOne({where: {id: 55}}).then(vol =>{
+  if (vol == null){
+    volunteer.create({id : 55, first_name: "Marko", last_name: "Marin", created_at: new Date()});
+  } else {
+    console.log(vol.first_name);
+  }
+});
+
+sequelize.sync();

@@ -50,8 +50,9 @@
     "react-router-dom": "^5.0.1",
     "rebuild": "^0.1.2",
     "reflect-metadata": "^0.1.13",
+    "sequelize": "^5.21.2",
+    "sequelize-cli": "^5.5.1",
     "sqlite3": "^4.1.0",
-    "typeorm": "^0.2.17",
     "wait-on": "^3.3.0"
   },
   "browserslist": {

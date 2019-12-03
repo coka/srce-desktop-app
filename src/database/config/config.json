@@ -1,0 +1,8 @@
+{
+  "development": {
+    "storage": "./srce.db",
+    "database": "srce",
+    "dialect": "sqlite"
+    
+  }
+}

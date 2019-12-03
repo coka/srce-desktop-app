@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import * as helper from '../../database/help';
+
 import {
     Container,
     Row,
@@ -36,9 +38,9 @@ class SingleCallsView extends Component {
         suicidFactor: 'Suicidni faktor',
         lastSuicidTry: 'Prethodni pokusaji suicida',
         shortContent: '',
-        note: ''
-    };
+        note: '',
 
+    };
     handleChangeInput = event => {
         const target = event.target;
         const value =
@@ -325,6 +327,7 @@ class SingleCallsView extends Component {
                             <DropdownButton
                                 variant="light"
                                 id="dropdown-basic-button"
+                                onClick = {this.funkcija}
                                 title={this.state.volunteer}
                             >
                                 <Dropdown.Item

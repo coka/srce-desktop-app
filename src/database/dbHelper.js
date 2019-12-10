@@ -68,6 +68,13 @@ volunteer.findOne({ where: { volunteer_id: 55 } }).then(vol => {
 
 sequelize.sync();
 
+exports.countVolunteers = () => {
+    const count = volunteer.count().then(c => {
+        return c;
+    });
+    return count;
+};
+
 exports.getVolunteerNames = () => {
     const rows = volunteer
         .findAll({
@@ -80,21 +87,26 @@ exports.getVolunteerNames = () => {
     return rows;
 };
 
-exports.getVolunteers = () => {
+exports.getVolunteers = range => {
     const rows = volunteer
-        .findAll({
-            raw: true
+        .findAndCountAll({
+            order: [['created_at', 'DESC']],
+            raw: true,
+            offset: range.offset,
+            limit: range.limit
         })
-        .then(volunteers => {
-            return volunteers;
+        .then(result => {
+            return { count: result.count, volunteers: result.rows };
         });
     return rows;
 };
 
 exports.deleteVolunteer = id => {
-    const isDeleted = volunteer.destroy({
-        where: { volunteer_id: id }
-    }).then(console.log('Deleted volunteer with id: ' + id));
+    const isDeleted = volunteer
+        .destroy({
+            where: { volunteer_id: id }
+        })
+        .then(console.log('Deleted volunteer with id: ' + id));
     return isDeleted;
 };
 

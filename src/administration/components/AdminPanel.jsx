@@ -2,21 +2,25 @@ import React, { Component } from 'react';
 import { FaUserMinus, FaUserPlus, FaPencilAlt } from 'react-icons/fa';
 import { format } from 'date-fns';
 
+import { Pagination } from 'react-bootstrap';
+
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
-class Admin extends Component {
+const itemsPerPage = 5;
+
+class AdminPanel extends Component {
     state = {
         volunteers: [],
         inputFirstName: '',
         inputLastName: '',
-        isSaveButtonEnabled: false
+        isSaveButtonEnabled: false,
+        count: 0,
+        selectedPage: 1,
+        numberOfPages: 1
     };
     componentDidMount() {
-        ipcRenderer.send('getVolunteers');
-        ipcRenderer.once('volunteersSent', (event, volunteers) => {
-            this.setState({ volunteers: volunteers });
-        });
+        this.handleGetVolunteers(0);
     }
     handleChangeInput = event => {
         const target = event.target;
@@ -25,15 +29,52 @@ class Admin extends Component {
 
         this.setState({ [name]: value });
     };
+    handleGetVolunteers = offset => {
+        return new Promise(resolve => {
+            ipcRenderer.send('getVolunteers', {
+                offset: offset,
+                limit: itemsPerPage
+            });
+            ipcRenderer.once('volunteersSent', async (event, result) => {
+                this.setState(
+                    {
+                        volunteers: result.volunteers,
+                        count: result.count
+                    },
+                    () => {
+                        let numberOfPages = Math.floor(
+                            result.count / itemsPerPage
+                        );
+                        result.count % itemsPerPage > 0
+                            ? (numberOfPages += 1)
+                            : (numberOfPages += 0);
+
+                        this.setState(
+                            {
+                                numberOfPages: numberOfPages,
+                                volunteers: result.volunteers,
+                                selectedPage: offset / itemsPerPage + 1
+                            },
+                            () => {
+                                resolve();
+                            }
+                        );
+                    }
+                );
+            });
+        });
+    };
     handleAddVolunteer = newVolunteer => {
         ipcRenderer.send('insertVolunteer', newVolunteer);
         ipcRenderer.once('volunteerInserted', (event, insertedID) => {
+            newVolunteer.volunteer_id = insertedID;
             if (insertedID) {
-                newVolunteer.volunteer_id = insertedID;
-                this.setState({
-                    volunteers: [...this.state.volunteers, newVolunteer],
-                    inputFirstName: '',
-                    inputLastName: ''
+                this.handleGetVolunteers(0).then(() => {
+                    this.setState({
+                        inputFirstName: '',
+                        inputLastName: '',
+                        selectedPage: 1
+                    });
                 });
             } else {
                 console.log('Something went wrong...');
@@ -43,13 +84,24 @@ class Admin extends Component {
     handleDeleteVolunteer = id => {
         ipcRenderer.send('deleteVolunteer', id);
         ipcRenderer.once('volunteerDeleted', (event, isDeleted) => {
+            const currentSelectedPage = this.state.selectedPage;
             if (isDeleted) {
-                this.setState({
-                    volunteers: this.state.volunteers.filter(
-                        v => v.volunteer_id !== id
-                    ),
-                    inputFirstName: '',
-                    inputLastName: ''
+                let offset = currentSelectedPage * itemsPerPage - itemsPerPage;
+                this.handleGetVolunteers(offset).then(() => {
+                    if (this.state.volunteers.length === 0) {
+                        if (currentSelectedPage > 2) {
+                            offset =
+                                (currentSelectedPage - 1) * itemsPerPage -
+                                itemsPerPage;
+                            this.handleGetVolunteers(offset).then(() => {
+                                this.setState({
+                                    selectedPage: currentSelectedPage - 1
+                                });
+                            });
+                        } else {
+                            this.handleGetVolunteers(0);
+                        }
+                    }
                 });
             } else {
                 console.log('Volunteer with id: ' + id + ' does not exists.');
@@ -57,9 +109,29 @@ class Admin extends Component {
         });
     };
     render() {
+        let items = [];
+        for (let number = 1; number <= this.state.numberOfPages; number++) {
+            let endOfPage = number * itemsPerPage;
+            items.push(
+                <Pagination.Item
+                    onClick={() =>
+                        this.handleGetVolunteers(
+                            endOfPage - itemsPerPage,
+                            itemsPerPage
+                        )
+                    }
+                    key={number}
+                    active={number === this.state.selectedPage}
+                >
+                    {number}
+                </Pagination.Item>
+            );
+        }
+
+        const pagination = <Pagination>{items}</Pagination>;
         return (
             <div className="container-fluid col-lg-12">
-                <table className="table">
+                <table className="table table-of-volunteers">
                     <thead className="thead-light">
                         <tr>
                             <th scope="col">ID</th>
@@ -99,6 +171,12 @@ class Admin extends Component {
                                 </tr>
                             );
                         })}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan="10">{pagination}</td>
+                        </tr>
+
                         <tr>
                             <td colSpan="5">
                                 <div className="border-top my-3"></div>
@@ -159,11 +237,11 @@ class Admin extends Component {
                                 </form>
                             </td>
                         </tr>
-                    </tbody>
+                    </tfoot>
                 </table>
             </div>
         );
     }
 }
 
-export default Admin;
+export default AdminPanel;

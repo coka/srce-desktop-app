@@ -39,8 +39,8 @@ function createWindow() {
         window.webContents.send('volunteerNamesSent', result);
     });
 
-    ipcMain.on('getVolunteers', async function() {
-        const result = await dbHelper.getVolunteers();
+    ipcMain.on('getVolunteers', async (event, range) => {
+        const result = await dbHelper.getVolunteers(range);
         window.webContents.send('volunteersSent', result);
     });
 

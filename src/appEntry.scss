@@ -35,3 +35,21 @@ tr {
         border-bottom-style: hidden;
     }
 }
+
+.table-of-volunteers {
+    thead,
+    tbody,
+    tr {
+        display: table;
+        width: 100%;
+        min-width: 315px;
+        table-layout: fixed;
+    }
+    tbody {
+        height: 280px;
+        table-layout: fixed;
+        overflow: auto;
+        display: block;
+        width: 100%;
+    }
+}

@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import { FaUserMinus, FaUserPlus, FaPencilAlt } from 'react-icons/fa';
 import { format } from 'date-fns';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import fetchVolunteers from '../../redux/actions/fetchVolunteers';
+import {
+    getVolunteersError,
+    getVolunteers,
+    getVolunteersPending
+} from '../../redux/reducers/volunteersReducer';
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
-class Admin extends Component {
+class AdminPanel extends Component {
     state = {
         volunteers: [],
         inputFirstName: '',
@@ -13,10 +21,7 @@ class Admin extends Component {
         isSaveButtonEnabled: false
     };
     componentDidMount() {
-        ipcRenderer.send('getVolunteers');
-        ipcRenderer.once('volunteersSent', (event, volunteers) => {
-            this.setState({ volunteers: volunteers });
-        });
+        this.props.fetchVolunteers();
     }
     handleChangeInput = event => {
         const target = event.target;
@@ -57,6 +62,7 @@ class Admin extends Component {
         });
     };
     render() {
+        const { items } = this.props.volunteers;
         return (
             <div className="container-fluid col-lg-12">
                 <table className="table">
@@ -70,7 +76,7 @@ class Admin extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.volunteers.map((v, i) => {
+                        {items.map((v, i) => {
                             return (
                                 <tr key={i}>
                                     <th scope="row">{v.volunteer_id}</th>
@@ -166,4 +172,18 @@ class Admin extends Component {
     }
 }
 
-export default Admin;
+const mapStateToProps = state => ({
+    error: getVolunteersError(state),
+    volunteers: getVolunteers(state),
+    pending: getVolunteersPending(state)
+});
+
+const mapDispatchToProps = dispatch =>
+    bindActionCreators(
+        {
+            fetchVolunteers: fetchVolunteers
+        },
+        dispatch
+    );
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdminPanel);

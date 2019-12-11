@@ -4,18 +4,16 @@ import { format } from 'date-fns';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import fetchVolunteers from '../../redux/actions/fetchVolunteers';
+import insertVolunteer from '../../redux/actions/insertVolunteer';
+import deleteVolunteer from '../../redux/actions/deleteVolunteer';
 import {
     getVolunteersError,
     getVolunteers,
     getVolunteersPending
 } from '../../redux/reducers/volunteersReducer';
 
-const electron = window.require('electron');
-const ipcRenderer = electron.ipcRenderer;
-
 class AdminPanel extends Component {
     state = {
-        volunteers: [],
         inputFirstName: '',
         inputLastName: '',
         isSaveButtonEnabled: false
@@ -31,35 +29,12 @@ class AdminPanel extends Component {
         this.setState({ [name]: value });
     };
     handleAddVolunteer = newVolunteer => {
-        ipcRenderer.send('insertVolunteer', newVolunteer);
-        ipcRenderer.once('volunteerInserted', (event, insertedID) => {
-            if (insertedID) {
-                newVolunteer.volunteer_id = insertedID;
-                this.setState({
-                    volunteers: [...this.state.volunteers, newVolunteer],
-                    inputFirstName: '',
-                    inputLastName: ''
-                });
-            } else {
-                console.log('Something went wrong...');
-            }
-        });
+        this.props.insertVolunteer(newVolunteer);
+
+        this.setState({ inputFirstName: '', inputLastName: '' });
     };
     handleDeleteVolunteer = id => {
-        ipcRenderer.send('deleteVolunteer', id);
-        ipcRenderer.once('volunteerDeleted', (event, isDeleted) => {
-            if (isDeleted) {
-                this.setState({
-                    volunteers: this.state.volunteers.filter(
-                        v => v.volunteer_id !== id
-                    ),
-                    inputFirstName: '',
-                    inputLastName: ''
-                });
-            } else {
-                console.log('Volunteer with id: ' + id + ' does not exists.');
-            }
-        });
+        this.props.deleteVolunteer(id);
     };
     render() {
         const { items } = this.props.volunteers;
@@ -181,7 +156,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
     bindActionCreators(
         {
-            fetchVolunteers: fetchVolunteers
+            fetchVolunteers: fetchVolunteers,
+            insertVolunteer: newVolunteer => insertVolunteer(newVolunteer),
+            deleteVolunteer: id => deleteVolunteer(id)
         },
         dispatch
     );

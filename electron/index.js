@@ -1,15 +1,6 @@
-//for build-electron old script : mkdir build/electron & robocopy electron build/electron /S 
-//to create windows installer run:
-    // npm run build -> creates build folder
-    // npm run build-electron
-    // npm run build-src
-    // npm run package -> creates dist folder
-    // inside dist there should be an exe file -> installer that creates a desktop shortcut
-
-
 /* eslint-disable import/no-extraneous-dependencies */
 const { app, BrowserWindow, Menu, ipcMain } = require('electron');
-const dbHelper = require('./src/database/dbHelper');
+const dbHelper = require('../src/database/dbHelper');
 
 //windows installer 
 if (handleSquirrelEvent(app)) {
@@ -44,16 +35,16 @@ function createWindow() {
         width: 'max',
         height: 'max'
     });
-    window.loadURL('http://localhost:3000');
+    // window.loadURL('http://localhost:3000');
 
     //building url
-    // const url = require('url')
-    // const path = require('path');
-    // window.loadURL(url.format({
-    //     pathname: path.join(__dirname, 'public/index.html'),
-    //     protocol: 'file:',
-    //     slashes: true
-    //   }));
+    const url = require('url')
+    const path = require('path');
+    window.loadURL(url.format({
+        pathname: path.join(__dirname, '../index.html'),
+        protocol: 'file:',
+        slashes: true
+      }));
 
     window.on('closed', () => {
         window = null;

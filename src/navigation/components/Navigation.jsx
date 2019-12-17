@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 class Navigation extends Component {
     render() {
         return (
-            <nav className="container-fluid navbar navbar-expand-sm navbar-light bg-light">
+            <nav className="container-fluid navbar navbar-expand-sm navbar-centar-srce ">
                 <Link className="navbar-brand" to="/">
                     NSOSS
                 </Link>

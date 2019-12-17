@@ -40,10 +40,9 @@ function createWindow() {
     window = new BrowserWindow({
         webPreferences: {
             nodeIntegration: true
-        },
-        width: 'max',
-        height: 'max'
+        }
     });
+    window.setFullScreen(true)
     window.loadURL('http://localhost:3000');
 
     //building url
@@ -154,3 +153,4 @@ function handleSquirrelEvent(application) {
             return true;
     }
 };
+

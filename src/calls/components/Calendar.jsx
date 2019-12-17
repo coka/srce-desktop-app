@@ -3,7 +3,9 @@ import {
     Dropdown,
     DropdownButton,
     ButtonToolbar,
-    Table
+    Table,
+    Row,
+    Col
 } from 'react-bootstrap';
 import {
     startOfMonth,
@@ -211,7 +213,7 @@ class Calendar extends Component {
         }
 
         const daysInMonth = rows.map((d, i) => {
-            return <tr key={d + i}>{d}</tr>;
+            return <tr key={d + i} className="col2">{d}</tr>;
         });
 
         let years = [];
@@ -225,7 +227,7 @@ class Calendar extends Component {
         }
 
         return (
-            <Table className="table-borderless calendar">
+            <table className="table-borderless calendar" >
                 <thead>
                     <tr>
                         <td
@@ -240,7 +242,7 @@ class Calendar extends Component {
                                 <DropdownButton
                                     title={format(selectedDate, 'MMM')}
                                     size="sm"
-                                    variant="outline-primary"
+                                    variant="outline-dark"
                                 >
                                     {months.map((m, i) => {
                                         return (
@@ -262,7 +264,7 @@ class Calendar extends Component {
                                 <DropdownButton
                                     title={format(selectedDate, 'yyyy')}
                                     size="sm"
-                                    variant="outline-primary"
+                                    variant="outline-dark"
                                 >
                                     {years.map((y, i) => {
                                         return (
@@ -302,7 +304,7 @@ class Calendar extends Component {
                     </tr>
                 </thead>
                 <tbody>{daysInMonth}</tbody>
-            </Table>
+            </table>
         );
     }
 }

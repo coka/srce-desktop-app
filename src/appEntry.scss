@@ -1,5 +1,6 @@
 @import '~bootstrap/scss/bootstrap';
 
+
 button {
     margin: 0 0 .5em .5em;
 }
@@ -27,6 +28,8 @@ button {
 }
 
 .calendar {
+    width: 600px !important;
+    margin-top: 100px;
     td:hover {
             cursor: pointer;
             background-color: #f8f9fa;

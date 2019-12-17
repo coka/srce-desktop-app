@@ -14,7 +14,7 @@
     "build": "react-scripts build",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "build-electron": "robocopy . build index.js ", 
+    "build-electron": "robocopy . build index.js ",
     "build-src": "mkdir build/src && mkdir build/src/database && robocopy build/src/database src/database /S",
     "package": "electron-builder build  --win -c.extraMetadata.main=build/electron/index.js --publish never"
   },
@@ -68,6 +68,7 @@
     "export-to-csv": "^0.2.1",
     "node-gyp": "^6.0.1",
     "react-bootstrap": "1.0.0-beta.16",
+    "react-calendar": "^2.19.2",
     "react-icons": "^3.8.0",
     "react-router-dom": "^5.0.1",
     "reflect-metadata": "^0.1.13",

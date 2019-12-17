@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Calendar from './Calendar';
+import CalendarNew from './CalendarNew';
 import {
     Container,
     Row,
@@ -98,59 +99,66 @@ class CallsView extends Component {
 
     render() {
         return (
-            <Container>
-                <Row>
-                    <Col>
-                        <ButtonGroup className="call-actions-menu" vertical size="sm">
-                            <Button variant="outline-dark">
-                                Detalji poziva
-                            </Button>
+            <CalendarNew onDateSelect={date =>this.handleChangeTableData(date)}/>
+            // <Container fluid="true">
+            //     <Row>
+            //         <Col>
+            //             <ButtonGroup className="call-actions-menu" vertical size="sm">
+            //                 <Button variant="outline-dark">
+            //                     Detalji poziva
+            //                 </Button>
 
-                            <br></br>
+            //                 <br></br>
 
-                            <Button variant="outline-success">
-                                Unos poziva
-                            </Button>
-                            <Button variant="outline-danger">
-                                Brisanje poziva
-                            </Button>
-                        </ButtonGroup>
-                    </Col>
-                    <Col>
-                        <Calendar
-                            onDateSelect={date =>
-                                this.handleChangeTableData(date)
-                            }
-                        />
-                        <br></br>
+            //                 <Button variant="outline-success">
+            //                     Unos poziva
+            //                 </Button>
+            //                 <Button variant="outline-danger">
+            //                     Brisanje poziva
+            //                 </Button>
+            //             </ButtonGroup>
+            //         </Col>
+            //         </Row>
 
-                        <h3 className="text-center bg-warning call-data-header">
-                            <IoMdList />
-                            &nbsp;Lista poziva
-                        </h3>
-                        {this.state.items.length > 0 ? (
-                            <Table striped hover className="call-data">
-                                <thead className="bg-light">
-                                    <tr className="text-center">
-                                        <th>ID</th>
-                                        <th>Vreme</th>
-                                        <th>Trajanje</th>
-                                        <th>Pozivar</th>
-                                        <th>Vrsta poziva</th>
-                                        <th>Suic. rizik</th>
-                                        <th>Volonter</th>
-                                    </tr>
-                                </thead>
-                                <tbody>{this.renderTableData()}</tbody>
-                            </Table>
-                        ) : (
-                            <p className="text-center call-data-msg">
-                                Nema poziva na izabrani datum.
-                            </p>
-                        )}
-                    </Col>
-                </Row>
-            </Container>
+            //         <Row>
+            //             <Col>
+            //                 <CalendarNew
+            //                     onDateSelect={date =>
+            //                         this.handleChangeTableData(date)
+            //                     }
+            //                 />
+            //             </Col>
+            //         </Row>
+            //         <Row>
+            //             <Col>
+
+            //             <h3 className="text-center bg-dirty-green call-data-header">
+            //                 <IoMdList />
+            //                 &nbsp;Lista poziva
+            //             </h3>
+            //             {this.state.items.length > 0 ? (
+            //                 <Table striped hover className="call-data">
+            //                     <thead className="bg-light">
+            //                         <tr className="text-center">
+            //                             <th>ID</th>
+            //                             <th>Vreme</th>
+            //                             <th>Trajanje</th>
+            //                             <th>Pozivar</th>
+            //                             <th>Vrsta poziva</th>
+            //                             <th>Suic. rizik</th>
+            //                             <th>Volonter</th>
+            //                         </tr>
+            //                     </thead>
+            //                     <tbody>{this.renderTableData()}</tbody>
+            //                 </Table>
+            //             ) : (
+            //                 <p className="text-center call-data-msg">
+            //                     Nema poziva na izabrani datum.
+            //                 </p>
+            //             )}
+            //         </Col>
+            //     </Row>
+            // </Container>
         );
     }
 }

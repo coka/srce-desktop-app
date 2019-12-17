@@ -7,3 +7,5 @@ import 'bootstrap';
 
 const app = document.getElementById('app');
 ReactDOM.render(<HashRouter><App/></HashRouter>, app);
+// ReactDOM.render(<div>testiavbidvb test</div>, app);
+

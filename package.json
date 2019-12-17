@@ -2,6 +2,8 @@
   "description": "Desktop application for Centar Srce",
   "license": "MIT",
   "name": "srce_desktop_app",
+  "version": "1.0.0",
+  "homepage": "./",
   "repository": {
     "type": "git",
     "url": "https://github.com/nsoss/srce-desktop-app.git"
@@ -9,14 +11,20 @@
   "scripts": {
     "start": "concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
     "react-start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "build-electron": "robocopy . build index.js ", 
+    "build-src": "mkdir build/src && mkdir build/src/database && robocopy build/src/database src/database /S",
+    "package": "electron-builder build  --win -c.extraMetadata.main=build/electron/index.js --publish never"
   },
   "build": {
-    "appId": "",
+    "appId": "srce-desktop",
+    "asar": true,
+    "extends": null,
     "files": [
-      "node_modules/**/*",
-      "package.json",
-      "index.js"
+      "build/**/*",
+      "node_modules/**/*"
     ]
   },
   "devDependencies": {
@@ -28,6 +36,7 @@
     "bootstrap": "^4.3.1",
     "css-loader": "^2.1.1",
     "electron": "^7.1.2",
+    "electron-builder": "^21.2.0",
     "electron-rebuild": "^1.8.8",
     "html-webpack-plugin": "^3.2.0",
     "jquery": "^3.4.0",

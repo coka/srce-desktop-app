@@ -42,14 +42,16 @@ function createWindow() {
             nodeIntegration: true
         }
     });
-    window.setFullScreen(true)
+    window.maximize();
+    window.webContents.openDevTools()
+    // window.setFullScreen(true)
     window.loadURL('http://localhost:3000');
 
     //building url
     // const url = require('url')
     // const path = require('path');
     // window.loadURL(url.format({
-    //     pathname: path.join(__dirname, 'public/index.html'),
+    //     pathname: path.join(__dirname, 'index.html'),
     //     protocol: 'file:',
     //     slashes: true
     //   }));

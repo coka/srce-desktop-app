@@ -1,87 +1,77 @@
 import React, { Component } from 'react';
-import Calendar from './Calendar';
-import CalendarNew from './CalendarNew';
-import {
-    Container,
-    Row,
-    Col,
-    Button,
-    Table,
-    ButtonGroup
-} from 'react-bootstrap';
+import CalendarNew from './Calendar';
 import { format } from 'date-fns';
 import { IoMdList } from 'react-icons/io';
+
+const itemsTestList = [
+    {
+        id: 1,
+        time: '19/12/2019',
+        duration: 51,
+        person: 'Joca',
+        type: 'Potrebna pomoc',
+        risk: 'veliki',
+        volonter: 'Stojkovic'
+    },
+    {
+        id: 2,
+        time: '20/12/2019',
+        duration: 33,
+        person: 'Ceca',
+        type: 'Potrebna pomoc',
+        risk: 'mali',
+        volonter: 'Marko'
+    },
+    {
+        id: 3,
+        time: '19/12/2019',
+        duration: 35,
+        person: 'Naca',
+        type: 'Hitan slucaj',
+        risk: 'srednji',
+        volonter: 'Ljilja'
+    },
+    {
+        id: 4,
+        time: '19/12/2019',
+        duration: 35,
+        person: 'Zaca',
+        type: 'Hitan slucaj',
+        risk: 'srednji',
+        volonter: 'Ljilja'
+    },
+    {
+        id: 5,
+        time: '18/12/2019',
+        duration: 35,
+        person: 'Kaca',
+        type: 'Hitan slucaj',
+        risk: 'srednji',
+        volonter: 'Ljilja'
+    }
+];
 
 class CallsView extends Component {
     constructor(props) {
         super(props);
-
-        let items = [
-            {
-                id: 1,
-                time: '12/11/2201',
-                duration: 51,
-                person: 'Joca',
-                type: 'Potrebna pomoc',
-                risk: 'veliki',
-                volonter: 'Stojkovic'
-            },
-            {
-                id: 2,
-                time: '12/11/2051',
-                duration: 33,
-                person: 'Ceca',
-                type: 'Potrebna pomoc',
-                risk: 'mali',
-                volonter: 'Marko'
-            },
-            {
-                id: 3,
-                time: '12/11/2011',
-                duration: 35,
-                person: 'Naca',
-                type: 'Hitan slucaj',
-                risk: 'srednji',
-                volonter: 'Ljilja'
-            },
-            {
-                id: 4,
-                time: '12/11/2031',
-                duration: 35,
-                person: 'Zaca',
-                type: 'Hitan slucaj',
-                risk: 'srednji',
-                volonter: 'Ljilja'
-            },
-            {
-                id: 5,
-                time: '24/11/2019',
-                duration: 35,
-                person: 'Kaca',
-                type: 'Hitan slucaj',
-                risk: 'srednji',
-                volonter: 'Ljilja'
-            }
-        ];
-
-        this.state.initialItems = items;
+        this.state={
+            items: itemsTestList,
+            itemsForDate: []
+        }
     }
-    state = {
-        initialItems: [],
-        items: []
-    };
 
     handleChangeTableData = date => {
-        let items = this.state.initialItems;
-        let itemsByDate = items.filter(p => {
+        console.log("callsview date "+ date)
+        let itemsByDate = this.state.items.filter(p => {
             return p.time === format(date, 'dd/MM/yyyy').toString();
         });
         this.setState({
-            items: [...itemsByDate]
+            itemsForDate: [...itemsByDate]
         });
     };
+
     renderTableData() {
-        return this.state.items.map((item, index) => {
+        return this.state.itemsForDate.map((item, index) => {
             const { id, time, duration, person, type, risk, volonter } = item; //destructuring
             return (
                 <tr className="text-center" key={id}>
@@ -99,66 +89,37 @@ class CallsView extends Component {
 
     render() {
         return (
-            <CalendarNew onDateSelect={date =>this.handleChangeTableData(date)}/>
-            // <Container fluid="true">
-            //     <Row>
-            //         <Col>
-            //             <ButtonGroup className="call-actions-menu" vertical size="sm">
-            //                 <Button variant="outline-dark">
-            //                     Detalji poziva
-            //                 </Button>
-
-            //                 <br></br>
-
-            //                 <Button variant="outline-success">
-            //                     Unos poziva
-            //                 </Button>
-            //                 <Button variant="outline-danger">
-            //                     Brisanje poziva
-            //                 </Button>
-            //             </ButtonGroup>
-            //         </Col>
-            //         </Row>
-
-            //         <Row>
-            //             <Col>
-            //                 <CalendarNew
-            //                     onDateSelect={date =>
-            //                         this.handleChangeTableData(date)
-            //                     }
-            //                 />
-            //             </Col>
-            //         </Row>
-            //         <Row>
-            //             <Col>
-
-            //             <h3 className="text-center bg-dirty-green call-data-header">
-            //                 <IoMdList />
-            //                 &nbsp;Lista poziva
-            //             </h3>
-            //             {this.state.items.length > 0 ? (
-            //                 <Table striped hover className="call-data">
-            //                     <thead className="bg-light">
-            //                         <tr className="text-center">
-            //                             <th>ID</th>
-            //                             <th>Vreme</th>
-            //                             <th>Trajanje</th>
-            //                             <th>Pozivar</th>
-            //                             <th>Vrsta poziva</th>
-            //                             <th>Suic. rizik</th>
-            //                             <th>Volonter</th>
-            //                         </tr>
-            //                     </thead>
-            //                     <tbody>{this.renderTableData()}</tbody>
-            //                 </Table>
-            //             ) : (
-            //                 <p className="text-center call-data-msg">
-            //                     Nema poziva na izabrani datum.
-            //                 </p>
-            //             )}
-            //         </Col>
-            //     </Row>
-            // </Container>
+            <div>
+                <CalendarNew onDateSelect={date =>this.handleChangeTableData(date)}/>
+                <div className="row mr-0">
+                    <div className="col-1"></div>
+                    <div className="col-10">
+                    <h4 className="text-center bg-dirty-green  mt-3">
+                        &nbsp;Lista poziva
+                    </h4>
+                    {this.state.items.length > 0 ? (
+                        <table striped hover className="call-data table">
+                            <thead className="bg-light">
+                                <tr className="text-center">
+                                    <th>ID</th>
+                                    <th>Vreme</th>
+                                    <th>Trajanje</th>
+                                    <th>Pozivar</th>
+                                    <th>Vrsta poziva</th>
+                                    <th>Suic. rizik</th>
+                                    <th>Volonter</th>
+                                </tr>
+                            </thead>
+                            <tbody>{this.renderTableData()}</tbody>
+                        </table>
+                    ) : (
+                        <p className="text-center ">
+                            Nema poziva na izabrani datum.
+                        </p>
+                    )}
+                </div>
+                </div>
+            </div>
         );
     }
 }

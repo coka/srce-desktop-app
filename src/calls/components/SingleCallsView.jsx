@@ -29,34 +29,39 @@ const localizedCallColumns = {
 };
 
 class SingleCallsView extends Component {
-    state = {
-        // Call
-        callNo: 0,
-        contactType: 'Vrsta kontakta',
-        callDate: '',
-        callDay: 0,
-        callTime: 0,
-        callDur: 0,
-        callType: 'Vrsta poziva',
+    constructor(props){
+        super(props);
+        this.state={
+            //call: {
+                // Call
+                callNo: 0,
+                contactType: 'Vrsta kontakta',
+                callDate: '',
+                callDay: 0,
+                callTime: 0,
+                callDur: 0,
+                callType: 'Vrsta poziva',
 
-        // Caller
-        name: '',
-        gender: 'Pol',
-        age: 'Starost',
-        maritalStatus: 'Bracno stanje',
-        numOfCall: 'Koji put zove',
-        planInvolvement: 'Ukljucenost u plan',
-        volunteer: [],
-        selectedVolunteer: 'Volonter',
+                // Caller
+                name: '',
+                gender: 'Pol',
+                age: 'Starost',
+                maritalStatus: 'Bracno stanje',
+                numOfCall: 'Koji put zove',
+                planInvolvement: 'Ukljucenost u plan',
+                volunteer: [],
+                selectedVolunteer: 'Volonter',
 
-        // Call Desc
-        problemType: 'Vrsta problema',
-        suicidRisk: 'Suicidni rizik',
-        suicidFactor: 'Suicidni faktor',
-        lastSuicidTry: 'Prethodni pokusaji suicida',
-        shortContent: '',
-        note: ''
-    };
+                // Call Desc
+                problemType: 'Vrsta problema',
+                suicidRisk: 'Suicidni rizik',
+                suicidFactor: 'Suicidni faktor',
+                lastSuicidTry: 'Prethodni pokusaji suicida',
+                shortContent: '',
+                note: ''
+            //}
+        }
+    }
 
     componentDidMount() {
         ipcRenderer.send('getVolunteerNames');

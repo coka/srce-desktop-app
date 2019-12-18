@@ -15,13 +15,14 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "build-electron": "robocopy . build index.js ",
-    "build-src": "mkdir build/src && mkdir build/src/database && robocopy build/src/database src/database /S",
-    "package": "electron-builder build  --win -c.extraMetadata.main=build/electron/index.js --publish never"
+    "build-src": "cd build && mkdir src && cd src && mkdir database && robocopy build/src/database src/database && cd .. && cd .. /S",
+    "package": "electron-builder build  --win -c.extraMetadata.main=build/index.js --publish never"
   },
   "build": {
     "appId": "srce-desktop",
     "asar": true,
     "extends": null,
+    "asarUnpack": "build/src/database/srce.db",
     "files": [
       "build/**/*",
       "node_modules/**/*"

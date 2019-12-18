@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+let Logo=require('./logo_new_srce.png')
 
 class Navigation extends Component {
     render() {
         return (
-            <nav className="container-fluid navbar navbar-expand-sm navbar-centar-srce ">
+            <nav className=" navbar navbar-expand-sm  ">
                 <Link className="navbar-brand" to="/">
-                    NSOSS
+                    <img src={Logo} style={{height: '40px', width:'80px'}} className="ml-1" alt="logo"/>
                 </Link>
 
                 <button

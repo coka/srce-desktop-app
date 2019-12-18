@@ -13,8 +13,16 @@
     padding: 12px !important;
 }
 
+.border-green{
+    border-color: #BFD630 !important;
+}
+
+
 .btn-dark-green{
     background-color:  #BFD630 !important;
+}
+.btn-dark-green:hover{
+    background-color:  #8D5FA8 !important;
 }
 
 .navbar-centar-srce .nav-item:hover {

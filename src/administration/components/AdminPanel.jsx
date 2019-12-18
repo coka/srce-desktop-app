@@ -1,15 +1,4 @@
 import React, { Component } from 'react';
-import {
-    Container,
-    Row,
-    Col,
-    Table,
-    Form,
-    Dropdown,
-    DropdownButton,
-    ButtonToolbar,
-    Button
-} from 'react-bootstrap';
 import { FaUserMinus, FaUserPlus, FaPencilAlt } from 'react-icons/fa';
 import { format } from 'date-fns';
 
@@ -17,12 +6,18 @@ const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
 class Admin extends Component {
-    state = {
-        volunteers: [],
-        inputFirstName: '',
-        inputLastName: '',
-        isSaveButtonEnabled: false
-    };
+    constructor(props){
+        super(props);
+        this.state={
+            volunteers: [],
+            inputFirstName: '',
+            inputLastName: '',
+            isSaveButtonEnabled: false
+        }
+        this.handleChangeInput = this.handleChangeInput.bind(this);
+        this.handleAddVolunteer = this.handleAddVolunteer.bind(this);
+        this.handleDeleteVolunteer = this.handleDeleteVolunteer.bind(this);
+    }
     componentDidMount() {
         ipcRenderer.send('getVolunteers');
         ipcRenderer.once('volunteersSent', (event, volunteers) => {
@@ -37,6 +32,8 @@ class Admin extends Component {
         this.setState({ [name]: value });
     };
     handleAddVolunteer = newVolunteer => {
+
+        console.log("handle add vol");
         ipcRenderer.send('insertVolunteer', newVolunteer);
         ipcRenderer.once('volunteerInserted', (event, insertedID) => {
             if (insertedID) {
@@ -67,20 +64,59 @@ class Admin extends Component {
             }
         });
     };
-    render() {
-        return (
-            <Container fluid>
-                <Table>
-                    <thead className="thead-light">
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Ime</th>
-                            <th scope="col">Prezime</th>
-                            <th scope="col">Datum dodavanja</th>
-                            <th scope="col"> </th>
-                        </tr>
-                    </thead>
-                    <tbody>
+
+    render(){
+        return(
+            <div>
+                <div className="row border-top border-bottom border-green mr-0 pr-0">
+                    <form className="col-12 m-0 pr-0 pl-5 mt-3 mb-3 ">
+                        <div className="form-row mr-0 align-items-center">
+                            <div className="form-group col-md-5">
+                                <label htmlFor="name">Ime</label>
+                                <input name="inputFirstName" value={this.state.inputFirstName} type="text" className="form-control" id="name" onChange={this.handleChangeInput}/>
+                            </div>
+                            <div className="form-group col-md-5">
+                                <label htmlFor="surname">Prezime</label>
+                                <input name="inputLastName" value={this.state.inputLastName} type="text" className="form-control" id="surname" onChange={this.handleChangeInput}/>
+                            </div>
+                            <div className="form-group col-md-1 mt-3 pt-3">
+                            <button
+                                className="btn btn-dark-green ml-2 form-control"
+                                disabled={
+                                    !(
+                                        this.state.inputFirstName &&
+                                        this.state.inputLastName
+                                    )
+                                }
+                                onClick={() =>
+                                    this.handleAddVolunteer({
+                                        first_name: this.state
+                                            .inputFirstName,
+                                        last_name: this.state
+                                            .inputLastName,
+                                        created_at: new Date().toISOString()
+                                    })
+                                }>
+                                    {' '}
+                                Dodaj &nbsp;
+                                <FaUserPlus />
+                            </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div className="row ml-1 mr-0">
+                    <table className="table">
+                        <thead striped hover className="call-data table mt-3" >
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Ime</th>
+                                <th scope="col">Prezime</th>
+                                <th scope="col">Datum dodavanja</th>
+                                <th scope="col"> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         {this.state.volunteers.map((v, i) => {
                             return (
                                 <tr key={i}>
@@ -94,9 +130,8 @@ class Admin extends Component {
                                         )}
                                     </td>
                                     <td>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
+                                        <button
+                                            className="btn btn-outline-danger"
                                             onClick={() =>
                                                 this.handleDeleteVolunteer(
                                                     v.volunteer_id
@@ -106,70 +141,16 @@ class Admin extends Component {
                                             {' '}
                                             Izbriši &nbsp;
                                             <FaUserMinus />
-                                        </Button>
+                                        </button>
                                     </td>
                                 </tr>
                             );
                         })}
-                        <tr>
-                            <td colSpan="5">
-                                <div className="border-top my-3"></div>
-                                <h4 className="text-muted">
-                                    <FaPencilAlt /> &nbsp;Unos novog volontera
-                                </h4>
-                                <Form>
-                                    <Form.Group controlId="formBasicFirstName">
-                                        <Form.Label>Ime</Form.Label>
-                                        <input
-                                            type="text"
-                                            name="inputFirstName"
-                                            value={this.state.inputFirstName}
-                                            onChange={this.handleChangeInput}
-                                            className="form-control"
-                                            id="exampleInputFirstName1"
-                                            placeholder="Unesite ime volontera"
-                                        />
-                                    </Form.Group>
-                                    <Form.Group controlId="formBasicLastName">
-                                        <Form.Label>Prezime</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="inputLastName"
-                                            value={this.state.inputLastName}
-                                            onChange={this.handleChangeInput}
-                                            className="form-control"
-                                            placeholder="Unesite prezime volontera"
-                                        />
-                                    </Form.Group>
-                                    <Button
-                                        variant="success"
-                                        size="sm"
-                                        disabled={
-                                            !(
-                                                this.state.inputFirstName &&
-                                                this.state.inputLastName
-                                            )
-                                        }
-                                        onClick={() =>
-                                            this.handleAddVolunteer({
-                                                first_name: this.state
-                                                    .inputFirstName,
-                                                last_name: this.state
-                                                    .inputLastName,
-                                                created_at: new Date().toISOString()
-                                            })
-                                        }
-                                    >
-                                        Dodaj &nbsp;
-                                        <FaUserPlus />
-                                    </Button>
-                                </Form>
-                            </td>
-                        </tr>
-                    </tbody>
-                </Table>
-            </Container>
-        );
+                        </tbody>
+                    </table> 
+                </div>
+            </div>
+        )
     }
 }
 

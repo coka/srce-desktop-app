@@ -30,7 +30,7 @@ class BarChart extends Component {
         select(node)
             .selectAll('rect')
             .data(data)
-            .style('fill', '#fe9922')
+            .style('fill', '#8D5FA8')
             .attr('height', 40)
             .attr('width', d => d.value)
             .attr('y', (d, i) => i * 70 + 50)

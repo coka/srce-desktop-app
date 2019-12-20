@@ -2,21 +2,20 @@
   "description": "Desktop application for Centar Srce",
   "license": "MIT",
   "name": "srce_desktop_app",
-  "version": "1.0.0",
-  "homepage": "./",
   "repository": {
     "type": "git",
     "url": "https://github.com/nsoss/srce-desktop-app.git"
   },
   "scripts": {
-    "start": "concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
+    "start": "concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && electron . \" ",
     "react-start": "react-scripts start",
     "build": "react-scripts build",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "build-electron": "robocopy . build index.js ", 
-    "build-src": "mkdir build/src && mkdir build/src/database && robocopy build/src/database src/database /S",
-    "package": "electron-builder build  --win -c.extraMetadata.main=build/electron/index.js --publish never"
+    "build-electron": "robocopy . build index.js ",
+    "build-src": "cd build && mkdir src && cd src && mkdir database && cd .. && cd .. && robocopy src/database build/src/database srce.db /S",
+    "package": "electron-builder build  --win -c.extraMetadata.main=build/index.js --publish never",
+    "postinstall": "electron-builder install-app-deps"
   },
   "build": {
     "appId": "srce-desktop",

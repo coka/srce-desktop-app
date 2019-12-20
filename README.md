@@ -16,3 +16,13 @@ if you use Windows, or `bash rebuild_script` for Linux.
 `index.html` for loading JavaScript.
 
 `npm dev` will track live changes for CSS and JS files
+
+## Windows installer on windows
+
+`npm run build` will create build folder with react
+`npm run build-electron` will copy index.js (electron amin file) to build folder
+`npm run build-src` will copy src/database folder contents to build/src/database folder
+`npm run package` will create dist folder with .exe file
+
+After running every script in the order specified above there should be an exe file 
+inside dist folder, after running it a desktop shortcut will appear.

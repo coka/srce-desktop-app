@@ -64,6 +64,7 @@ class CallsView extends Component {
         ];
 
         this.state.initialItems = items;
+      //  this.state ={name: "calls"}
     }
     state = {
         initialItems: [],
